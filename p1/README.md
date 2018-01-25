@@ -1,4 +1,8 @@
 3nd Year Embedded Systems
+
+FS7548 flex sensor with ADS1115 ADC
+
+Adafruit Feather HUZZAH ESP8266
 -----
 # lad worksheet
 [first lab](./docs/lab-instructions-i2c.pdf)
