@@ -3,6 +3,9 @@
 # lad worksheet
 [first lab](./docs/lab-instructions-i2c.pdf)
 
+# MicroPython
+[official support webapge](http://docs.micropython.org/en/v1.8.2/esp8266/esp8266/tutorial/index.html)
+
 # ampy Cheatsheet
 [official doc](https://cdn-learn.adafruit.com/downloads/pdf/micropython-basics-load-files-and-run-code.pdf)
 
