@@ -4,14 +4,14 @@ FS7548 flex sensor with ADS1115 ADC
 
 Adafruit Feather HUZZAH ESP8266
 -----
-# lad worksheet
+# Docs
 [first lab](./docs/lab-instructions-i2c.pdf)
 
-# MicroPython
-[official support webapge](http://docs.micropython.org/en/v1.8.2/esp8266/esp8266/tutorial/index.html)
+[MicroPython official support webapge](http://docs.micropython.org/en/v1.8.2/esp8266/esp8266/tutorial/index.html)
 
-# ampy Cheatsheet
-[official doc](https://cdn-learn.adafruit.com/downloads/pdf/micropython-basics-load-files-and-run-code.pdf)
+[ampy official doc](https://cdn-learn.adafruit.com/downloads/pdf/micropython-basics-load-files-and-run-code.pdf)
+
+[ADS1115 data sheet](http://www.ti.com/lit/ds/symlink/ads1115.pdf)
 
 ### Run python script
 `ampy -p $AMPY_PORT run`
