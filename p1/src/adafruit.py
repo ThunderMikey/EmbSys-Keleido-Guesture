@@ -1,6 +1,6 @@
 from machine import Pin, I2C
 from umqtt.simple import MQTTClient
-import system
+#import system
 import network
 import ujson
 import time 
@@ -15,7 +15,7 @@ class Keleido:
 	data["DataType"] = "Unknown"
 	data["value"] = self.meaningfulData
 	encoded = ujson.dumps(data)
-	print(encoded)
+	return encoded
 
 
     def convertData(self):
@@ -48,9 +48,9 @@ class Keleido:
         ap_if = network.WLAN(network.AP_IF)
         ap_if.active(False)
 
-        sta_if = network.WLAN(network.AP_IF)
+        sta_if = network.WLAN(network.STA_IF)
         sta_if.active(True)
-        sta_if.connect(wifiName, password)
+        sta_if.connect('EEERover', 'exhibition')
 
         return (ap_if, sta_if)
 
