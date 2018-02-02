@@ -4,6 +4,11 @@ FS7548 flex sensor with ADS1115 ADC
 
 Adafruit Feather HUZZAH ESP8266
 -----
+# Connection details
+
+## Connect to WebREPL
+passwrd: `Keleido`
+
 # Docs
 [first lab](./docs/lab-instructions-i2c.pdf)
 
