@@ -4,6 +4,7 @@ from umqtt.simple import MQTTClient
 import network
 import ujson
 import time 
+import webrepl
 
 class Keleido:
     def __init__(self, wifiName, wifiPasswd):
@@ -50,8 +51,17 @@ class Keleido:
 
         sta_if = network.WLAN(network.STA_IF)
         sta_if.active(True)
-        sta_if.connect('EEERover', 'exhibition')
-
+        sta_if.connect(wifiName, password)
+ 
+        # print wifi info
+        print ("WiFi status: ", sta_if.status(), 
+                "WiFi config: ", sta_if.ifconfig())
         return (ap_if, sta_if)
 
+    def getWifiStatus(self):
+        print ("wiFi is connected? ", self.staIf.isconnected() )
+        print ("WiFi status: ", self.staIf.status(), 
+                "WiFi config: ", self.staIf.ifconfig())
 
+    def enableWebREPL(self):
+        print( webrepl.start() )
