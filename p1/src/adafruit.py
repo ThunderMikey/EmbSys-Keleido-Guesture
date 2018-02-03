@@ -5,16 +5,22 @@ import network
 import ujson
 import time 
 import webrepl
+import machine
 
 class Keleido:
-    def __init__(self, wifiName, wifiPasswd):
+    def __init__(self, wifiName, wifiPasswd, topic, BrokerIP):
         self.meaningfulData = 0
+        self.BrokerIP = BrokerIP
+        self.topic = topic
         (self.apIf, self.staIf) = self.connectToWifi(wifiName, wifiPasswd)
+        while(self.staIf.isconnected() != True):
+            pass
+        self.enableWebREPL()
 
     def packIntoJSON(self):
 	data = {}
-	data["DataType"] = "Unknown"
-	data["value"] = self.meaningfulData
+	data["DataType"] = "AngleOfFlex(0-22)"
+	data["value"] = self.convertData()
 	encoded = ujson.dumps(data)
 	return encoded
 
@@ -65,3 +71,8 @@ class Keleido:
 
     def enableWebREPL(self):
         print( webrepl.start() )
+
+    def boardCastData(self):
+        client = MQTTClient(machine.unique_id(),self.BrokerIP)
+        client.connect()
+        client.publish(self.topic,bytes("random data heyheyhey",'utf-8'))
