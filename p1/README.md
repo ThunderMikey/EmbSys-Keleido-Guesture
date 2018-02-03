@@ -21,6 +21,13 @@ passwrd: `Keleido`
 # Install mosquitto-clients, the MQTT client
 `sudo apt install mosquitto-clinets`
 
+## get info
+* `-h` host
+* `-t` topic
+* `-v` verbose
+
+`mosquitto_sub -h 192.168.0.10 -v -t '#'`
+
 # Docs
 [first lab](./docs/lab-instructions-i2c.pdf)
 
