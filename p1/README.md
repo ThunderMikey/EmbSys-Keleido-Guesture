@@ -18,6 +18,9 @@ The connection info should be printed out
 ### Open WebREPL in browser
 passwrd: `Keleido`
 
+# Install mosquitto-clients, the MQTT client
+`sudo apt install mosquitto-clinets`
+
 # Docs
 [first lab](./docs/lab-instructions-i2c.pdf)
 
