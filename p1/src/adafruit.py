@@ -72,7 +72,11 @@ class Keleido:
     def enableWebREPL(self):
         print( webrepl.start() )
 
-    def boardCastData(self):
+    def broadcastData(self, data=bytes("random data heyheyhey",'utf-8')):
         client = MQTTClient(machine.unique_id(),self.BrokerIP)
         client.connect()
-        client.publish(self.topic,bytes("random data heyheyhey",'utf-8'))
+        client.publish(self.topic, data)
+
+    def broadcastString(self, inString="No input string\n"):
+        data = bytes(inString, 'utf-8')
+        self.broadcastData(data)
