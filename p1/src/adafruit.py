@@ -33,10 +33,12 @@ class Keleido:
         i2c.writeto_mem(ADSAddr, 1, CONTINUOUS_READ)
         data = i2c.readfrom_mem(ADSAddr, 0, 2)
         intData = int.from_bytes(data, 'big')
+        if intData > 7200:
+            angleOfFlex = 180
         if intData > 3000 :
             angleOfFlex = int ((intData-2000)/28) #7200
         else:
-            angleOfFlex = intData/22
+            angleOfFlex = int intData/22
 
         #print(i2cportNo)
         #print(data)
