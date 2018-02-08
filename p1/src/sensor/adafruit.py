@@ -13,6 +13,9 @@ class Keleido:
         self.BrokerIP = BrokerIP
         self.topic = topic
         (self.apIf, self.staIf) = self.connectToWifi(wifiName, wifiPasswd)
+
+        self.i2c_flex = I2C(scl=Pin(4), sda=Pin(5), freq=100000)
+
         while(self.staIf.isconnected() != True):
             pass
         self.enableWebREPL()
@@ -24,20 +27,24 @@ class Keleido:
 	encoded = ujson.dumps(data)
 	return encoded
 
+    def readFlexData(self):
 
-    def convertData(self):
-        """ read raw data and convert into somthing meaningful """
-
-        i2c = I2C(scl=Pin(4), sda=Pin(5), freq=100000)
-        i2cportNo = i2c.scan()
+        i2cportNo = self.i2c_flex.scan()
         ADSAddr = i2cportNo[0]
 
         # write to config register 0x01
         # CONTINUOUS_READ=0000 010 0 100 0 0 0 11
         CONTINUOUS_READ=bytearray(0b0010010010000011)
 
-        i2c.writeto_mem(ADSAddr, 1, CONTINUOUS_READ)
-        data = i2c.readfrom_mem(ADSAddr, 0, 2)
+        self.i2c_flex.writeto_mem(ADSAddr, 1, CONTINUOUS_READ)
+        
+        # read 2 bytes from conversion register
+        return self.i2c_flex.readfrom_mem(ADSAddr, 0, 2)
+
+    def convertData(self):
+        """ read raw data and convert into somthing meaningful """
+
+        data = self.readFlexData()
         intData = int.from_bytes(data, 'big')
         if intData > 7200:
             angleOfFlex = 180
