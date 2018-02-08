@@ -4,6 +4,20 @@ FS7548 flex sensor with ADS1115 ADC
 
 Adafruit Feather HUZZAH ESP8266
 -----
+# Connection details
+
+## Connect to WebREPL
+* `import notmain` from REPL
+* or run notmain.py from ampy
+
+The connection info should be printed out
+
+### Get WebREPL
+`git clone https://github.com/micropython/webrepl.git`
+
+### Open WebREPL in browser
+passwrd: `Keleido`
+
 # Docs
 [first lab](./docs/lab-instructions-i2c.pdf)
 
