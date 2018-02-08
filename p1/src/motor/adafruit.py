@@ -64,6 +64,15 @@ class Keleido:
         topic = bytes.decode(rawTopic, 'utf-8')
         msg = bytes.decode(rawData, 'utf-8')
         print("msg received ", topic, msg)
+
+        multFactor = 100/180
+        # flexAngle should between (0, 180)
+        flexAngle = msg['angle']
+        if flexAngle <= 180 and flexAngle >= 0:
+            servoAngle = 25 + flexAngle*multFactor
+            self.turnServo(servoAngle)
+        else:
+            print("flex angle should be (0, 180), but it is: {0}".format(flexAngle))
         
 
     def broadcastString(self, inString="No input string\n"):
