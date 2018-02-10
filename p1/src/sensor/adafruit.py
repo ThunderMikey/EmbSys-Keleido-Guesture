@@ -21,7 +21,8 @@ class Keleido:
 
         # write to config register 0x01
         # CONTINUOUS_READ=0000 010 0 100 0 0 0 11
-        CONTINUOUS_READ=bytearray(0b0010010010000011)
+        # CONTINUOUS_READ=bytearray(0b0010010010000011)
+        CONTINUOUS_READ=bytearray(0b0100010010000011)
 
         self.i2c_flex.writeto_mem(self.ADSAddr, 1, CONTINUOUS_READ)
 
