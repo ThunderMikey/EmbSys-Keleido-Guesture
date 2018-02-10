@@ -14,32 +14,40 @@ class Keleido:
         self.topic = topic
         (self.apIf, self.staIf) = self.connectToWifi(wifiName, wifiPasswd)
 
-        self.i2c_flex = I2C(scl=Pin(4), sda=Pin(5), freq=100000)
-
-        while(self.staIf.isconnected() != True):
-            pass
-        self.enableWebREPL()
-
-    def packIntoJSON(self):
-	data = {}
-	data["DataType"] = "AngleOfFlex(0-22)"
-	data["value"] = self.convertData()
-	encoded = ujson.dumps(data)
-	return encoded
-
-    def readFlexData(self):
-
+        # flex sensor init, writeto_mem has to be in __init__, mem alloc failure otherwise
+        self.i2c_flex = I2C(scl=Pin(5), sda=Pin(4), freq=100000)
         i2cportNo = self.i2c_flex.scan()
-        ADSAddr = i2cportNo[0]
+        self.ADSAddr = i2cportNo[0]
 
         # write to config register 0x01
         # CONTINUOUS_READ=0000 010 0 100 0 0 0 11
         CONTINUOUS_READ=bytearray(0b0010010010000011)
 
-        self.i2c_flex.writeto_mem(ADSAddr, 1, CONTINUOUS_READ)
-        
+        self.i2c_flex.writeto_mem(self.ADSAddr, 1, CONTINUOUS_READ)
+
+        while(self.staIf.isconnected() != True):
+            pass
+        self.printWifiStatus()
+        # mqtt client init
+        self.mqttClient = MQTTClient(machine.unique_id(),self.BrokerIP)
+        self.mqttClient.connect()
+
+        self.enableWebREPL()
+
+
+    def prepareData(self):
+        """ convert int reading to byte JSON string format
+        """
+        data = {}
+        data["angle"] = self.convertData()
+        dataJsonString = ujson.dumps(data)
+        dataByte = bytes(dataJsonString, 'utf-8')
+	return dataByte
+
+
+    def readFlexData(self):
         # read 2 bytes from conversion register
-        return self.i2c_flex.readfrom_mem(ADSAddr, 0, 2)
+        return self.i2c_flex.readfrom_mem(self.ADSAddr, 0, 2)
 
     def convertData(self):
         """ read raw data and convert into somthing meaningful """
@@ -69,23 +77,24 @@ class Keleido:
         sta_if.connect(wifiName, password)
  
         # print wifi info
-        print ("WiFi status: ", sta_if.status(), 
-                "WiFi config: ", sta_if.ifconfig())
+        print ("WiFi connecting... ")
         return (ap_if, sta_if)
 
-    def getWifiStatus(self):
+    def printWifiStatus(self):
         print ("wiFi is connected? ", self.staIf.isconnected() )
         print ("WiFi status: ", self.staIf.status(), 
                 "WiFi config: ", self.staIf.ifconfig())
 
     def enableWebREPL(self):
-        print( webrepl.start() )
+        webrepl.start()
 
     def broadcastData(self, data=bytes("random data heyheyhey",'utf-8')):
-        client = MQTTClient(machine.unique_id(),self.BrokerIP)
-        client.connect()
-        client.publish(self.topic, data)
+        """ publish data in bytes
+        """
+        self.mqttClient.publish(self.topic, data)
 
     def broadcastString(self, inString="No input string\n"):
+        """ publish data in string
+        """
         data = bytes(inString, 'utf-8')
         self.broadcastData(data)
