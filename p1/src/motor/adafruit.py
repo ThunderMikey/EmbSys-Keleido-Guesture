@@ -15,6 +15,9 @@ class Keleido:
         self.servoPin = servoPin
         self.LEDPin = LEDPin
 
+        self.medianFilterSize = 7
+        self.flexAngleFIFO = [180]*self.medianFilterSize
+
         # WiFi interface
         (self.apIf, self.staIf) = self.connectToWifi(wifiName, wifiPasswd)
 
@@ -74,17 +77,23 @@ class Keleido:
         msg = bytes.decode(rawData, 'utf-8')
         print("msg received ", topic, msg)
 
-        """
         msgJson = ujson.loads(msg)
         multFactor = 100/180
         # flexAngle should between (0, 180)
         flexAngle = msgJson['angle']
+        # median filter to remove jitter
+        medianIdx = int(len(self.flexAngleFIFO)/2)
+        self.flexAngleFIFO.pop(0)
+        self.flexAngleFIFO.append(flexAngle)
+        flexAngleMF = list(self.flexAngleFIFO)
+        flexAngle = flexAngleMF[medianIdx]
+        print(self.flexAngleFIFO)
+
         if flexAngle <= 180 and flexAngle >= 0:
-            servoAngle = 25 + flexAngle*multFactor
+            servoAngle = int(25 + flexAngle*multFactor)
             self.turnServo(servoAngle)
         else:
             print("flex angle should be (0, 180), but it is: {0}".format(flexAngle))
-        """
 
     def broadcastString(self, inString="No input string\n"):
         data = bytes(inString, 'utf-8')
