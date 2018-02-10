@@ -4,6 +4,7 @@ import paho.mqtt.client as mqtt
 
 width, height = pyautogui.size()
 
+#manually set up the enviorment, then after set up, press ok
 pyautogui.alert(text='would you like to connect to ESP8266?', title='connection', button='OK')
 
 # The callback for when the client receives a CONNACK response from the server.
@@ -16,10 +17,14 @@ def on_connect(client, userdata, flags, rc):
 
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
+    #bytes.decode
+    #json,load
+    #str to int
+    #do somthing
     print(msg.topic+" "+str(msg.payload))
-    print(int(msg.payload))
-    # if int(str(msg.payload)) >= 10:
-    #     print("click")
+    pyautogui.hotkey('altleft','tab')
+    if int(msg.payload) >= 10:
+        pyautogui.hotkey('altleft','tab')
 
 client = mqtt.Client()
 client.on_connect = on_connect
