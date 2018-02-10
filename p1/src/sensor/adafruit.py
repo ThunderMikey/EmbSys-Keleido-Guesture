@@ -61,8 +61,8 @@ class Keleido:
             angleOfFlex = 180
         elif intData > 3000 :
             angleOfFlex = int ((intData-2000)/28) #7200
-        elif intData > 2700 :
-            angleOfFlex = int (intData/22)
+        # elif intData > 2700 :
+        #    angleOfFlex = int (intData/22)
 	else:
 	    angleOfFlex = 0
 
