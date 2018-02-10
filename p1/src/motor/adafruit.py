@@ -65,8 +65,8 @@ class Keleido:
         print( webrepl.start() )
 
     def receiveData(self):
-        #self.mqttClient.check_msg()
-        self.mqttClient.wait_msg()
+        self.mqttClient.check_msg()
+        #self.mqttClient.wait_msg()
 
     def setMotorAngle(self, rawTopic, rawData):
         """ decode received msg and turn motor """
