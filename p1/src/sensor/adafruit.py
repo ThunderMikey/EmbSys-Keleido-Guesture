@@ -54,7 +54,9 @@ class Keleido:
 
         data = self.readFlexData()
         intData = int.from_bytes(data, 'big')
-        if intData > 7200:
+        if intData >= 65536:
+            angleOfFlex = 0
+        elif intData > 7200:
             angleOfFlex = 180
         elif intData > 3000 :
             angleOfFlex = int ((intData-2000)/28) #7200
