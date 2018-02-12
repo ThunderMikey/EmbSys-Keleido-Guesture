@@ -7,6 +7,7 @@ import time
 import webrepl
 import machine
 import ustruct
+
 # Register value constants:
 # refrenece to
 # RANGE_16_G               = const(0b11)    # +/- 16g
@@ -25,6 +26,24 @@ import ustruct
 # DATARATE_LOWPOWER_1K6HZ  = const(0b1000)
 # DATARATE_LOWPOWER_5KHZ   = const(0b1001)
 
+REG_OUTADC1_L   = const(0x08)
+REG_WHOAMI      = const(0x0F)
+REG_TEMPCFG     = const(0x1F)
+REG_CTRL1       = const(0x20)
+REG_CTRL3       = const(0x22)
+REG_CTRL4       = const(0x23)
+REG_CTRL5       = const(0x24)
+REG_OUT_X_H     = const(0x29)
+FIFO_CTRL_REG   = const(0x2E)
+INT1_CFG        = const(0x30)
+REG_INT1SRC     = const(0x31)
+REG_CLICKCFG    = const(0x38)
+REG_CLICKSRC    = const(0x39)
+REG_CLICKTHS    = const(0x3A)
+REG_TIMELIMIT   = const(0x3B)
+REG_TIMELATENCY = const(0x3C)
+REG_TIMEWINDOW  = const(0x3D)
+
 # Other constants
 STANDARD_GRAVITY = 9.806
 
@@ -35,30 +54,51 @@ class LIS3DH:
         self.int2 = int2
         #set up I2C
         self.i2c_lis3dh = I2C(scl=Pin(int1), sda=Pin(int2), freq=100000)
+
         i2cportNo = self.i2c_lis3dh.scan()
         ADSAddr = i2cportNo[0]
         # Set Reboot flag of Control 5 Register (0x24) high
         self.i2c_lis3dh.writeto_mem(ADSAddr,0x24,bytearray(0x80))
         time.sleep(0.01) # takes 5ms
+        # self.i2c_lis3dh.writeto_mem(ADSAddr,REG_CTRL3,bytearray(0x10))
+        # self.i2c_lis3dh.writeto_mem(ADSAddr,REG_CTRL5,bytearray(0x08))
+        # self.i2c_lis3dh.writeto_mem(ADSAddr,REG_CTRL3,bytearray(0x80))
+        # # Enable all axes, normal mode, REG_CTRL1
+        # self.i2c_lis3dh.writeto_mem(ADSAddr,0x20,bytearray(0x77))
+        # # High res & BDU enabled. REG_CTRL4
+        # # RANGE_2_G
+        # self.i2c_lis3dh.writeto_mem(ADSAddr,0x23,bytearray(0x88))
+        # self.i2c_lis3dh.writeto_mem(ADSAddr,REG_CTRL3,bytearray(0x10))
+        # # Enable ADCs.REG_TEMPCFG
+        # self.i2c_lis3dh.writeto_mem(ADSAddr,0x1F,bytearray(0x80))
+        # # Latch interrupt for INT1
+        # self.i2c_lis3dh.writeto_mem(ADSAddr,0x24,bytearray(0x00))
+        # # Set interrupt
+        # self.i2c_lis3dh.writeto_mem(ADSAddr,0x2E,bytearray(0x40))
 
 
     def acceleration(self):
         i2cportNo = self.i2c_lis3dh.scan()
         ADSAddr = i2cportNo[0]
         # Enable all axes, normal mode, REG_CTRL1
-        self.i2c_lis3dh.writeto_mem(ADSAddr,0x20,bytearray(0x77))
+        self.i2c_lis3dh.writeto_mem(ADSAddr,REG_CTRL1,bytearray(0x77))
         # High res & BDU enabled. REG_CTRL4
         # RANGE_2_G
-        self.i2c_lis3dh.writeto_mem(ADSAddr,0x23,bytearray(0x88))
+        self.i2c_lis3dh.writeto_mem(ADSAddr,REG_CTRL4,bytearray(0x88))
+        self.i2c_lis3dh.writeto_mem(ADSAddr,REG_CTRL3,bytearray(0x10))
         # Enable ADCs.REG_TEMPCFG
-        self.i2c_lis3dh.writeto_mem(ADSAddr,0x1F,bytearray(0x80))
+        self.i2c_lis3dh.writeto_mem(ADSAddr,REG_TEMPCFG,bytearray(0x80))
         # Latch interrupt for INT1
-        self.i2c_lis3dh.writeto_mem(ADSAddr,0x24,bytearray(0x00))
+        self.i2c_lis3dh.writeto_mem(ADSAddr,REG_CTRL5,bytearray(0x00))
         # Set interrupt
-        self.i2c_lis3dh.writeto_mem(ADSAddr,0x2E,bytearray(0x40))
-        #The x, y, z acceleration values returned in a 3-tuple and are in m / s ^ 2."""
+        self.i2c_lis3dh.writeto_mem(ADSAddr,FIFO_CTRL_REG,bytearray(0x40))
+        # interrupt int1 config
+        self.i2c_lis3dh.writeto_mem(ADSAddr,INT1_CFG,bytearray(0b11111111))
+        self.i2c_lis3dh.writeto_mem(ADSAddr,REG_INT1SRC,bytearray(0b01111111))
+        #self.i2c_lis3dh.writeto_mem(ADSAddr,0x2E,bytearray(0x40))
+        #The x, y, z acceleration values returned in a 3-tuple and are in m / s ^ 2.
         divider = 16380
-        x = self.i2c_lis3dh.readfrom_mem(ADSAddr, 0x28 | 0x80, 2)
+        x = self.i2c_lis3dh.readfrom_mem(ADSAddr, REG_OUT_X_H, 2)
         # convert from Gs to m / s ^ 2 and adjust for the range
         x = int.from_bytes(x, 'big')
         # x = (x / divider) * STANDARD_GRAVITY

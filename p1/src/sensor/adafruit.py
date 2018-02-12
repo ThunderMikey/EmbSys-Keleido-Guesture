@@ -3,7 +3,7 @@ from umqtt.simple import MQTTClient
 #import system
 import network
 import ujson
-import time 
+import time
 import webrepl
 import machine
 
@@ -14,7 +14,7 @@ class Keleido:
         self.topic = topic
         (self.apIf, self.staIf) = self.connectToWifi(wifiName, wifiPasswd)
 
-        self.i2c_flex = I2C(scl=Pin(4), sda=Pin(5), freq=100000)
+        self.i2c_flex = I2C(scl=Pin(5), sda=Pin(4), freq=100000)
 
         while(self.staIf.isconnected() != True):
             pass
@@ -37,7 +37,7 @@ class Keleido:
         CONTINUOUS_READ=bytearray(0b0010010010000011)
 
         self.i2c_flex.writeto_mem(ADSAddr, 1, CONTINUOUS_READ)
-        
+
         # read 2 bytes from conversion register
         return self.i2c_flex.readfrom_mem(ADSAddr, 0, 2)
 
@@ -67,15 +67,15 @@ class Keleido:
         sta_if = network.WLAN(network.STA_IF)
         sta_if.active(True)
         sta_if.connect(wifiName, password)
- 
+
         # print wifi info
-        print ("WiFi status: ", sta_if.status(), 
+        print ("WiFi status: ", sta_if.status(),
                 "WiFi config: ", sta_if.ifconfig())
         return (ap_if, sta_if)
 
     def getWifiStatus(self):
         print ("wiFi is connected? ", self.staIf.isconnected() )
-        print ("WiFi status: ", self.staIf.status(), 
+        print ("WiFi status: ", self.staIf.status(),
                 "WiFi config: ", self.staIf.ifconfig())
 
     def enableWebREPL(self):

@@ -6,4 +6,5 @@ scl = 0
 sda = 16
 Lis3dh = LIS3DH(scl,sda)
 
-print(Lis3dh.acceleration())
+while 1:
+    print(Lis3dh.acceleration())
