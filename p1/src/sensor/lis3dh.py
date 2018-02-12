@@ -30,9 +30,11 @@ STANDARD_GRAVITY = 9.806
 
 class LIS3DH:
     #Driver for LIS3DH accelerometer.
-    def __init__(self):
+    def __init__(self,int1 = None,int2 = None):
+        self.int1 = int1
+        self.int2 = int2
         #set up I2C
-        self.i2c_lis3dh = I2C(scl=Pin(14), sda=Pin(15), freq=100000)
+        self.i2c_lis3dh = I2C(scl=Pin(int1), sda=Pin(int2), freq=100000)
         i2cportNo = self.i2c_lis3dh.scan()
         ADSAddr = i2cportNo[0]
         # Set Reboot flag of Control 5 Register (0x24) high
@@ -50,12 +52,16 @@ class LIS3DH:
         self.i2c_lis3dh.writeto_mem(ADSAddr,0x23,bytearray(0x88))
         # Enable ADCs.REG_TEMPCFG
         self.i2c_lis3dh.writeto_mem(ADSAddr,0x1F,bytearray(0x80))
+        # Latch interrupt for INT1
+        self.i2c_lis3dh.writeto_mem(ADSAddr,0x24,bytearray(0x00))
+        # Set interrupt
+        self.i2c_lis3dh.writeto_mem(ADSAddr,0x2E,bytearray(0x40))
         #The x, y, z acceleration values returned in a 3-tuple and are in m / s ^ 2."""
         divider = 16380
-        x = self.i2c_lis3dh.readfrom_mem(8, 0x28 | 0x80, 2)
+        x = self.i2c_lis3dh.readfrom_mem(ADSAddr, 0x28 | 0x80, 2)
         # convert from Gs to m / s ^ 2 and adjust for the range
         x = int.from_bytes(x, 'big')
-        x = (x / divider) * STANDARD_GRAVITY
+        # x = (x / divider) * STANDARD_GRAVITY
         # y = (y / divider) * STANDARD_GRAVITY
         # z = (z / divider) * STANDARD_GRAVITY
         return x

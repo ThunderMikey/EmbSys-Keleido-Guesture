@@ -1,8 +1,9 @@
 from adafruit import Keleido
 from lis3dh import LIS3DH
 
-magic = Keleido(wifiName="EEERover", wifiPasswd="exhibition", topic="keleido/flex", BrokerIP = "192.168.0.10")
-magic.broadcastString("this is a message")
+# magic = Keleido(wifiName="EEERover", wifiPasswd="exhibition", topic="keleido/flex", BrokerIP = "192.168.0.10")
+scl = 0
+sda = 16
+Lis3dh = LIS3DH(scl,sda)
 
-Lis3dh = LIS3DH()
 print(Lis3dh.acceleration())
