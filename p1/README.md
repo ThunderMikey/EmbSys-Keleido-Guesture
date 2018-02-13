@@ -3,7 +3,7 @@
 FS7548 flex sensor with ADS1115 ADC
 
 Adafruit Feather HUZZAH ESP8266
------
+
 # Connection details
 
 ## Connect to WebREPL
@@ -28,6 +28,9 @@ passwrd: `Keleido`
 [ADS1115 data sheet](http://www.ti.com/lit/ds/symlink/ads1115.pdf)
 
 [FS7548 data sheet](https://cdn.sparkfun.com/datasheets/Sensors/ForceFlex/FLEXSENSORREVA1.pdf)
+
+[Adafruit Feather HUZZAH ESP8266](https://cdn-learn.adafruit.com/assets/assets/000/046/211/original/Huzzah_ESP8266_Pinout_v1.2.pdf)
+
 
 ### Run python script
 `ampy -p $AMPY_PORT run`
