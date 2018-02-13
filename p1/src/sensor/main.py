@@ -1,13 +1,15 @@
 from adafruit import Keleido
-from lis3dh import LIS3DH
 import time
 
-# magic = Keleido(wifiName="EEERover", wifiPasswd="exhibition", topic="keleido/flex", BrokerIP = "192.168.0.10")
-scl = 0
-sda = 16
-Lis3dh = LIS3DH(scl,sda)
+magic = Keleido(wifiName="EEERover", wifiPasswd="exhibition", BrokerIP = "192.168.0.10",
+                flexTopic="keleido/flex", accTopic="keleido/acc",
+                flexSclPin=5, flexSdaPin=4,
+                accSclPin=0, accSdaPin=16)
 
-while 1:
-    x,y,z = Lis3dh.acceleration()
-    print('x = {}G, y = {}G, z = {}G'.format(x, y, z))
-    time.sleep(0.3)
+while 1 :
+    """ send flex angle and accelerometer at freq of 20Hz
+    """
+    magic.doBatchJob()
+    time.sleep(0.05)
+
+
