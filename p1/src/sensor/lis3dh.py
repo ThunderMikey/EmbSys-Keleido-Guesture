@@ -62,19 +62,19 @@ class LIS3DH:
         self.i2c_lis3dh.writeto_mem(AccAddr,REG_CTRL1,bytearray([0x97]))
         # High res & BDU enabled. REG_CTRL4
         # RANGE_2_G
-        self.i2c_lis3dh.writeto_mem(ADSAddr,REG_CTRL4,bytearray([0x88]))
+        self.i2c_lis3dh.writeto_mem(AccAddr,REG_CTRL4,bytearray([0x00]))
 
     def acceleration(self):
         i2cportNo = self.i2c_lis3dh.scan()
         AccAddr = i2cportNo[0]
         divider = 16380
-        x = self.i2c_lis3dh.readfrom_mem(AccAddr, REG_OUT_X_L  | 0x80, 2)
+        x, y, z = ustruct.unpack('<hhh', self.i2c_lis3dh.readfrom_mem(AccAddr,REG_OUT_X_L | 0x80, 6))
         # convert from Gs to m / s ^ 2 and adjust for the range
-        x = int.from_bytes(x, 'big')
         x = (x / divider) * STANDARD_GRAVITY
-        # y = (y / divider) * STANDARD_GRAVITY
-        # z = (z / divider) * STANDARD_GRAVITY
-        return x
+        y = (y / divider) * STANDARD_GRAVITY
+        z = (z / divider) * STANDARD_GRAVITY
+
+        return x, y, z
 
         # Enable all axes, normal mode, REG_CTRL1
         # self.i2c_lis3dh.writeto_mem(AccAddr,REG_CTRL1,bytearray(0x97))
