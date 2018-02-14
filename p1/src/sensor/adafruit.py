@@ -21,27 +21,12 @@ class Keleido:
 
         # connnect Wifi
         (self.apIf, self.staIf) = self.connectToWifi(wifiName, wifiPasswd)
+        
+        # init flex sensor
+        self.i2c_flex = self.initFlexSensor(flexSclPin, flexSdaPin)
 
-        # flex sensor init, writeto_mem has to be in __init__, mem alloc failure otherwise
-        self.i2c_flex = I2C(scl=Pin(flexSclPin), sda=Pin(flexSdaPin), freq=100000)
-        i2cportNo = self.i2c_flex.scan()
-        self.ADSAddr = i2cportNo[0]
-
-        # write to config register 0x01
-        # CONTINUOUS_READ=0000 010 0 100 0 0 0 11
-        CONTINUOUS_READ=bytearray([0b01000100, 0b10000011])
-        #CONTINUOUS_READ=bytearray([0b00100100, 0b10000011])
-        #CONTINUOUS_READ=bytearray([0x24, 0x83])
-        print(CONTINUOUS_READ)
-        self.i2c_flex.writeto_mem(self.ADSAddr, 1, CONTINUOUS_READ)
-
-        #############
-
+        # init accelerometer
         self.lis3dh = LIS3DH(accSclPin,accSdaPin)
-
-
-        ##########
-
 
 
         while(self.staIf.isconnected() != True):
@@ -53,7 +38,21 @@ class Keleido:
 
         self.enableWebREPL()
 
+    def initFlexSensor(self, flexSclPin, flexSdaPin):
 
+        i2c_flex = I2C(scl=Pin(flexSclPin), sda=Pin(flexSdaPin), freq=100000)
+        i2cportNo = i2c_flex.scan()
+        self.ADSAddr = i2cportNo[0]
+
+        # write to config register 0x01
+        # CONTINUOUS_READ=0000 010 0 100 0 0 0 11
+        CONTINUOUS_READ=bytearray([0b01000100, 0b10000011])
+        #CONTINUOUS_READ=bytearray([0b00100100, 0b10000011])
+        #CONTINUOUS_READ=bytearray([0x24, 0x83])
+        print(CONTINUOUS_READ)
+        i2c_flex.writeto_mem(self.ADSAddr, 1, CONTINUOUS_READ)
+
+        return i2c_flex
 
     def readFlexData(self):
         # read 2 bytes from conversion register
