@@ -78,18 +78,39 @@ class Keleido:
         intData = int.from_bytes(data, 'big')
         print(intData)
 
-        if intData >= 26800:
-            angleOfFlex = 200
-        elif intData > 25000:
-            angleOfFlex = int (((intData-25000)/90)+180)
-        elif intData > 12500:
-            angleOfFlex = int (((intData-12500)/138)+90)
-        elif intData > 8600:
-            angleOfFlex = int ((intData-8600)/43)
-        # elif intData > 2700 :
-        #    angleOfFlex = int (intData/22)
+# """
+#         if intData >= 26800:
+#            #angleOfFlex = 200
+#         elif intData > 25000:
+#             #angleOfFlex = int (((intData-25000)/90)+180)
+#         elif intData > 12500:
+#             #angleOfFlex = int (((intData-12500)/138)+90)
+#         elif intData > 8600:
+#             angleOfFlex = int ((intData-8600)/43)
+#             temperature has some effect??? not very much though
+#         else:
+#             angleOfFlex = 0
+# """
+
+# """
+#         if intData >= 15500:
+#             angleOfFlex = 200
+#         elif intData > 14700:
+#             angleOfFlex = int (((intData-14700)/40)+180)
+#         elif intData > 9500:
+#             angleOfFlex = int (((intData-9500)/57)+90)
+#         elif intData > 7200:
+#             angleOfFlex = int ((intData-7200)/25)
+#         else:
+#             angleOfFlex = 0
+# """
+        if intData >= 2330:
+            angleOfFlex = 180
+        elif intData > 1700:
+            angleOfFlex = int ((intData-1700)/3.5)
         else:
             angleOfFlex = 0
+
         print(angleOfFlex)
 
         #print(i2cportNo)
