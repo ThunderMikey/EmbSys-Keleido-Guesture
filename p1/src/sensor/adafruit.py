@@ -68,16 +68,20 @@ class Keleido:
         data = self.readFlexData()
         intData = int.from_bytes(data, 'big')
         print(intData)
-        if intData >= 32768:
-            angleOfFlex = 0
-        elif intData > 7200:
-            angleOfFlex = 180
-        elif intData > 3000 :
-            angleOfFlex = int ((intData-2000)/28) #7200
+
+        if intData >= 26800:
+            angleOfFlex = 200
+        elif intData > 25000:
+            angleOfFlex = int (((intData-25000)/90)+180)
+        elif intData > 12500:
+            angleOfFlex = int (((intData-12500)/138)+90)
+        elif intData > 8600:
+            angleOfFlex = int ((intData-8600)/43)
         # elif intData > 2700 :
         #    angleOfFlex = int (intData/22)
-	else:
-	    angleOfFlex = 0
+        else:
+            angleOfFlex = 0
+        print(angleOfFlex)
 
         #print(i2cportNo)
         #print(data)
