@@ -12,7 +12,8 @@ from lis3dh import LIS3DH
 class Keleido:
     def __init__(self, wifiName, wifiPasswd, flexTopic, accTopic, BrokerIP,
             flexSclPin=5, flexSdaPin=4,
-            accSclPin=0, accSdaPin=16):
+            accSclPin=0, accSdaPin=16,
+            wifiLEDPin=2):
 
         # constants declaration
         self.BrokerIP = BrokerIP
@@ -28,10 +29,18 @@ class Keleido:
         # init accelerometer
         self.lis3dh = LIS3DH(accSclPin,accSdaPin)
 
+        # init WiFi LED indicator, active low
+        self.wifiLED = Pin(wifiLEDPin, Pin.OUT)
+        self.wifiLED.on()
 
         while(self.staIf.isconnected() != True):
             pass
+
+        # turn on WiFi LED
+        self.wifiLED.off()
+
         self.printWifiStatus()
+
         # mqtt client init
         self.mqttClient = MQTTClient(machine.unique_id(),self.BrokerIP)
         self.mqttClient.connect()
