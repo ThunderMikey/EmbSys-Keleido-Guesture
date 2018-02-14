@@ -58,3 +58,8 @@ passwrd: `Keleido`
 
 ![adafruit back](https://cdn-learn.adafruit.com/assets/assets/000/028/700/original/adafruit_products_2821_back_ORIG.jpg)
 
+
+
+
+
+In src folder, sensor folder includes library we used to attract reading and conveert it to degree information, motor folder includes how we drives motor. 
