@@ -7,12 +7,37 @@ import time
 import webrepl
 import machine
 
+class Servo:
+    def __init__(self, servoPin):
+        self.servo = PWM(Pin(servoPin), freq=50, duty=77)
+        self.medianFilterSize = 7
+        self.FIFO = [77]*self.medianFilterSize
+
+    def turnServo(self, in_dutyCycle):
+        """ The center is at around 78, and the exact range varies with the servo model,
+            but should be somewhere between 25 and 125, which corresponds to about 180° of movement.
+        """
+        medianIdx = int(len(self.FIFO)/2)
+        self.FIFO.pop(0)
+        self.FIFO.append(in_dutyCycle)
+        # copy the FIFO
+        medianFilterList = list(self.FIFO)
+        # sort list
+        medianFilterList.sort()
+        # choose median value
+        dutyCycle = medianFilterList[medianIdx]
+        if dutyCycle >= 25 and dutyCycle <= 125 :
+            self.servo.duty(dutyCycle)
+        else:
+            print("{0} is too big, range (25, 125)".format(dutyCycle))
+
+
 class Keleido:
-    def __init__(self, wifiName, wifiPasswd, topic, BrokerIP, servoPin=14, LEDPin=4):
-        self.meaningfulData = 0
+    def __init__(self, wifiName, wifiPasswd, topic_flex, topic_acc, BrokerIP, flexServoPin=14, LEDPin=4, accxServoPin=0, accyServoPin=16):
         self.BrokerIP = BrokerIP
-        self.topic = topic
-        self.servoPin = servoPin
+        self.topic_flex = topic_flex
+        self.topic_acc = topic_acc
+        self.flexServoPin = flexServoPin
         self.LEDPin = LEDPin
 
         self.medianFilterSize = 7
@@ -22,7 +47,9 @@ class Keleido:
         (self.apIf, self.staIf) = self.connectToWifi(wifiName, wifiPasswd)
 
         # servo interface
-        self.servo = PWM(Pin(servoPin), freq=50, duty=77)
+        self.flexServo = PWM(Pin(self.flexServoPin), freq=50, duty=77)
+        self.accxServo = PWM(Pin(self.accxServoPin), freq=50, duty=77)
+        self.accyServo = PWM(Pin(self.accyServoPin), freq=50, duty=77)
 
         # LED WiFi status indicator, LED is active low
         self.LED_WifiConnected = Pin(self.LEDPin, Pin.OUT)
@@ -41,7 +68,7 @@ class Keleido:
         self.mqttClient = MQTTClient(machine.unique_id(),self.BrokerIP)
         self.mqttClient.connect()
         self.mqttClient.set_callback(self.setMotorAngle)
-        self.mqttClient.subscribe(self.topic)
+        self.mqttClient.subscribe(self.topic_flex)
 
         # enable WebREPL
         self.enableWebREPL()
@@ -109,7 +136,7 @@ class Keleido:
             but should be somewhere between 25 and 125, which corresponds to about 180° of movement.
         """
         if angle >= 25 and angle <= 125 :
-            self.servo.duty(angle)
+            self.flexServo.duty(angle)
         else:
             print("{0} is too big, range (25, 125)".format(angle))
 
