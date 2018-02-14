@@ -85,9 +85,14 @@ class Keleido:
         medianIdx = int(len(self.flexAngleFIFO)/2)
         self.flexAngleFIFO.pop(0)
         self.flexAngleFIFO.append(flexAngle)
+        # copy the FIFO
         flexAngleMF = list(self.flexAngleFIFO)
+        # sort list
+        flexAngleMF.sort()
+        # choose median value
         flexAngle = flexAngleMF[medianIdx]
-        print(self.flexAngleFIFO)
+        # debug output
+        #print(self.flexAngleFIFO)
 
         if flexAngle <= 180 and flexAngle >= 0:
             servoAngle = int(25 + flexAngle*multFactor)
