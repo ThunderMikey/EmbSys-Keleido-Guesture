@@ -33,23 +33,19 @@ class Servo:
 
 
 class Keleido:
-    def __init__(self, wifiName, wifiPasswd, topic_flex, topic_acc, BrokerIP, flexServoPin=14, LEDPin=4, accxServoPin=0, accyServoPin=16):
+    def __init__(self, wifiName, wifiPasswd, topic_flex, topic_acc, BrokerIP, flexServoPin=14, LEDPin=4, accxServoPin=0, accyServoPin=15):
         self.BrokerIP = BrokerIP
         self.topic_flex = topic_flex
         self.topic_acc = topic_acc
-        self.flexServoPin = flexServoPin
         self.LEDPin = LEDPin
-
-        self.medianFilterSize = 7
-        self.flexAngleFIFO = [180]*self.medianFilterSize
 
         # WiFi interface
         (self.apIf, self.staIf) = self.connectToWifi(wifiName, wifiPasswd)
 
         # servo interface
-        self.flexServo = PWM(Pin(self.flexServoPin), freq=50, duty=77)
-        self.accxServo = PWM(Pin(self.accxServoPin), freq=50, duty=77)
-        self.accyServo = PWM(Pin(self.accyServoPin), freq=50, duty=77)
+        self.flexServo = Servo(flexServoPin)
+        self.acczServo = Servo(accxServoPin)
+        self.accyServo = Servo(accyServoPin)
 
         # LED WiFi status indicator, LED is active low
         self.LED_WifiConnected = Pin(self.LEDPin, Pin.OUT)
@@ -64,11 +60,17 @@ class Keleido:
         # WiFi connected, turn LED on, active low
         self.LED_WifiConnected.off()
 
-        # MQTT interface
-        self.mqttClient = MQTTClient(machine.unique_id(),self.BrokerIP)
-        self.mqttClient.connect()
-        self.mqttClient.set_callback(self.setMotorAngle)
-        self.mqttClient.subscribe(self.topic_flex)
+        # MQTT flex
+        self.mqttClient_flex = MQTTClient(machine.unique_id(),self.BrokerIP)
+        self.mqttClient_flex.connect()
+        self.mqttClient_flex.set_callback(self.flexCallback)
+        self.mqttClient_flex.subscribe(self.topic_flex)
+
+        # MQTT accelerometer
+        self.mqttClient_acc = MQTTClient(machine.unique_id(),self.BrokerIP)
+        self.mqttClient_acc.connect()
+        self.mqttClient_acc.set_callback(self.accCallback)
+        self.mqttClient_acc.subscribe(self.topic_acc)
 
         # enable WebREPL
         self.enableWebREPL()
@@ -95,11 +97,13 @@ class Keleido:
         print( webrepl.start() )
 
     def receiveData(self):
-        self.mqttClient.check_msg()
+        """" unblocking checkout msg call """
+        self.mqttClient_flex.check_msg()
+        self.mqttClient_acc.check_msg()
         #self.mqttClient.wait_msg()
 
-    def setMotorAngle(self, rawTopic, rawData):
-        """ decode received msg and turn motor """
+    def flexCallback(self, rawTopic, rawData):
+        """ decode received msg and turn servo """
         topic = bytes.decode(rawTopic, 'utf-8')
         msg = bytes.decode(rawData, 'utf-8')
         print("msg received ", topic, msg)
@@ -108,35 +112,25 @@ class Keleido:
         multFactor = 100/180
         # flexAngle should between (0, 180)
         flexAngle = msgJson['angle']
-        # median filter to remove jitter
-        medianIdx = int(len(self.flexAngleFIFO)/2)
-        self.flexAngleFIFO.pop(0)
-        self.flexAngleFIFO.append(flexAngle)
-        # copy the FIFO
-        flexAngleMF = list(self.flexAngleFIFO)
-        # sort list
-        flexAngleMF.sort()
-        # choose median value
-        flexAngle = flexAngleMF[medianIdx]
-        # debug output
-        #print(self.flexAngleFIFO)
 
         if flexAngle <= 180 and flexAngle >= 0:
             servoAngle = int(25 + flexAngle*multFactor)
-            self.turnServo(servoAngle)
+            self.flexServo.turnServo(servoAngle)
         else:
             print("flex angle should be (0, 180), but it is: {0}".format(flexAngle))
 
-    def broadcastString(self, inString="No input string\n"):
-        data = bytes(inString, 'utf-8')
-        self.broadcastData(data)
+    def accCallback(self, rawTopic, rawData):
+        """ decode accelerometer msg and turn servo """
+        msg = bytes.decode(rawData, 'uft-8')
 
-    def turnServo(self, angle):
-        """ The center is at around 78, and the exact range varies with the servo model,
-            but should be somewhere between 25 and 125, which corresponds to about 180° of movement.
-        """
-        if angle >= 25 and angle <= 125 :
-            self.flexServo.duty(angle)
-        else:
-            print("{0} is too big, range (25, 125)".format(angle))
+        msgJson = ujson.loads(msg)
+        acc_z = msgJson['z']
+        acc_y = msgJson['y']
+
+        # support acc range (-20, 20)
+        multFactor = 100/40
+        acczDuty = int(77 + acc_z*multFactor)
+        accyDuty = int(77 + acc_y*multFactor)
+        self.acczServo.turnServo(acczDuty)
+        self.accyServo.turnServo(accyDuty)
 
