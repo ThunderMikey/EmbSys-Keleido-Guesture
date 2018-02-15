@@ -18,6 +18,27 @@ LIS3DH accelerometer
 
 Adafruit Feather HUZZAH ESP8266
 
+# Directory structure
+
+```
+|
+src
+   \
+   gui:    mouse control on PC side
+   	     MQTT receive side
+   |
+   sensor: flex sensor and accelerometer, ESP board
+   		MQTT send side
+   |
+   motor: servo receiving flex angle, ESP board
+   		MQTT receive side
+|
+doc: lab instructions
+|
+README.md: this file
+|
+demo.md: demo script
+```
 # Connection details
 
 ## Connect to WebREPL
@@ -82,5 +103,3 @@ passwrd: `Keleido`
 
 
 
-## What source file contains
-In src folder, sensor folder includes library we used to attract reading and conveert it to degree information, motor folder includes how we drives motor. 
