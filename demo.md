@@ -10,4 +10,4 @@ The second sensor connected to esp8266 is an accelerometer. When this sensor cha
 
 Probably show this picture:
 
-![alt text](https://github.com/ThunderMikey/EmbSys-Keleido-Guesture/blob/framework/demopic.png)
+![alt text](./demopic.png)
