@@ -7,8 +7,10 @@
 https://zc3515.wixsite.com/kaleido
 
 ### Sensor Used
-FS7548 flex sensor with ADS1115 ADC
-LIS3DH accelerometer
+FS7548 flex sensor with ADS1115 ADC  
+
+LIS3DH accelerometer 
+
 Adafruit Feather HUZZAH ESP8266
 
 # Connection details
