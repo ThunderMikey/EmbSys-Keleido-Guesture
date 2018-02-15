@@ -2,14 +2,14 @@
 
 ## Group Name: Keleido
 
-## Product: Guesture Reconstruction with its Applications Using Flex Sensor
-
+## Product: Guesture Reconstruction with its Applications Using Flex and Other Sensor
+The product takes input from a single flex sensor with an additional accelerometer and transmit the information via MQTT and the data format is JSON, the information is then subscribed by multiply devices to further process the information. In this repository there are a few demo in the folder src/gui, but the application is unlimited and here is just a glance of what the technology can be applied to.   
 ### Team Members: 
-Mike Chen(yc12015)
+Mike Chen (yc12015): https://github.com/ThunderMikey/
 
-Zeqian Cao(zc3515)
+Zeqian Cao (zc3515): https://github.com/kuzhankuixiong
 
-Zihan Liu(zl6114) 
+Zihan Liu (zl6114): https://github.com/zl6114
 
 ### Product Website
 https://zc3515.wixsite.com/kaleido
