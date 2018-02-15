@@ -1,8 +1,11 @@
 # 3nd Year Embedded Systems IOT Coursework
+
 ## Group Name: Keleido
+
 ## Product: Guesture Reconstruction with its Applications Using Flex Sensor
+
 ### Team Members: 
-Mike Chuen(yc12015)
+Mike Chen(yc12015)
 
 Zeqian Cao(zc3515)
 
@@ -40,12 +43,6 @@ README.md: this file
 demo.md: demo script
 ```
 # Connection details
-
-## Connect to WebREPL
-* `import notmain` from REPL
-* or run notmain.py from ampy
-
-The connection info should be printed out
 
 ### Get WebREPL
 `git clone https://github.com/micropython/webrepl.git`
