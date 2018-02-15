@@ -1,7 +1,7 @@
 # 3nd Year Embedded Systems IOT Coursework
 ## Group Name: Keleido
 ## Product: Guesture Reconstruction with its Applications Using Flex Sensor
-### Team Members: Mike Chueng(yc12015), Zeqian Cao(zc3515), Zihan Liu(zl6114) 
+### Team Members: Mike Chen(yc12015), Zeqian Cao(zc3515), Zihan Liu(zl6114) 
 
 ### Product Website
 https://zc3515.wixsite.com/kaleido
