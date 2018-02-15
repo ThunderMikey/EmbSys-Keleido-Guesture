@@ -3,12 +3,13 @@
 ## Product: Guesture Reconstruction with its Applications Using Flex Sensor
 ### Team Members: Mike Chueng(yc12015), Zeqian Cao(zc3515), Zihan Liu(zl6114) 
 
-FS7548 flex sensor with ADS1115 ADC
-
-Adafruit Feather HUZZAH ESP8266
-
 ### Product Website
 https://zc3515.wixsite.com/kaleido
+
+### Sensor Used
+FS7548 flex sensor with ADS1115 ADC
+LIS3DH accelerometer
+Adafruit Feather HUZZAH ESP8266
 
 # Connection details
 
@@ -48,6 +49,7 @@ passwrd: `Keleido`
 `ampy -p $AMPY_PORT ls`
 
 # Coursewok1 info
+
 ## Deliverables
 * Demo showing sensing, processing and upload of data
 * Code submission via GitHub
