@@ -4,6 +4,9 @@ FS7548 flex sensor with ADS1115 ADC
 
 Adafruit Feather HUZZAH ESP8266
 
+### Product Website
+https://zc3515.wixsite.com/kaleido
+
 # Connection details
 
 ## Connect to WebREPL
