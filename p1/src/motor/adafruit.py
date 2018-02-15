@@ -64,13 +64,14 @@ class Keleido:
         self.mqttClient_flex = MQTTClient(machine.unique_id(),self.BrokerIP)
         self.mqttClient_flex.connect()
         self.mqttClient_flex.set_callback(self.flexCallback)
-        self.mqttClient_flex.subscribe(self.topic_flex)
+        #self.mqttClient_flex.subscribe(self.topic_flex)
+        self.mqttClient_flex.subscribe(['keleido/flex', 'keleido/acc'])
 
         # MQTT accelerometer
-        self.mqttClient_acc = MQTTClient(machine.unique_id(),self.BrokerIP)
-        self.mqttClient_acc.connect()
-        self.mqttClient_acc.set_callback(self.accCallback)
-        self.mqttClient_acc.subscribe(self.topic_acc)
+        #self.mqttClient_acc = MQTTClient(machine.unique_id(),self.BrokerIP)
+        #self.mqttClient_acc.connect()
+        #self.mqttClient_acc.set_callback(self.accCallback)
+        #self.mqttClient_acc.subscribe(self.topic_acc)
 
         # enable WebREPL
         self.enableWebREPL()
@@ -99,7 +100,7 @@ class Keleido:
     def receiveData(self):
         """" unblocking checkout msg call """
         self.mqttClient_flex.check_msg()
-        self.mqttClient_acc.check_msg()
+        #self.mqttClient_acc.check_msg()
         #self.mqttClient.wait_msg()
 
     def flexCallback(self, rawTopic, rawData):
@@ -108,7 +109,9 @@ class Keleido:
         msg = bytes.decode(rawData, 'utf-8')
         print("msg received ", topic, msg)
 
-        msgJson = ujson.loads(msg)
+        #msgs = msg.splitlines()
+        #print(msgs)
+        msgJson = ujson.loads(msgs)
         multFactor = 100/180
         # flexAngle should between (0, 180)
         flexAngle = msgJson['angle']
